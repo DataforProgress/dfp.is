@@ -1,0 +1,6 @@
+data/
+figs/
+__pycache__/
+*.ttf
+
+.idea/
