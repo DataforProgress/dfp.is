@@ -1,7 +1,7 @@
 from util import *
 
-from dfpvizpy.dfpvizpy import dfPal, dfpPartisan
-from base_question import BaseQuestion
+from dfpvizpy.dfpvizpy import dfpPartisan
+from questions.base_question import BaseQuestion
 
 dfCat = sns.color_palette(["#124073", "#A8BF14", "#B71D1A", "#BF7A00", "#b3b3b3", "#000000", "#BC4A11"])
 
