@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action="/search/results" method="post" class="center">
+    <div class="input-group center" style="width: 55%">
+        <input type="text" class="form-control input-lg" name="input" placeholder="Search" autofocus>
+        <div class="input-group-btn" style="display: inline-block;">
+            <button type="submit">
+                Go
+            </button>
+        </div>
+    </div>
+</form>
+
+<br><br>
+
+{% endblock %}

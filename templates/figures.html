@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<h1>{{question['name']}}</h1>
+
+<p>{{question['description']}}</p>
+
+{% if no_figs|length %}
+<br><br>
+<p>{{ no_figs }}</p>
+{% else %}
+<div class="row">
+
+    {% for img in imgs %}
+    <div class="row">
+        <div class="col-md-3"><img class="center" src="{{ url_for('static', filename=img) }}" style="width: 60%"></div>
+    </div>
+    {% endfor %}
+
+</div>
+{% endif %}
+
+{% endblock %}

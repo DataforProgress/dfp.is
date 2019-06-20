@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    div.center {
+        height: 10em;
+        position: relative
+    }
+
+    div.center img.test {
+        margin: 0;
+        background: white;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%)
+    }
+
+    .second {
+        width: 60%;
+        position: relative;
+        top: 100px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    .center {
+        width: 100%;
+        position: relative;
+        display: block;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    html {
+        height: 100%;
+    }
+
+    body {
+        min-height: 100%;
+        display: grid;
+        grid-template-rows: 1fr auto;
+    }
+
+    * {
+        margin: 0;
+    }
+
+    html, body {
+        height: 100%;
+    }
+
+    form {
+        display: inline-block;
+    }
+
+    input {
+        margin: 50px 0;
+        background: none;
+        border-bottom: 1px solid black;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        width: 25vw;
+        height: 40px;
+        font-size: 20px;
+        display: inline-block !important;
+    }
+
+    input:focus {
+        outline: none;
+        border-bottom: 3px solid black;
+        color: black;
+    }
+
+    button {
+        width: 40px;
+        height: 40px;
+        max-width: 3vw;
+        max-height: 3vw;
+        min-width: 40px;
+        min-height: 40px;
+        background: black;
+        color: white;
+        display: inline-block !important;
+    }
+
+</style>
+
+
+<head>
+    {% block head %}
+    <link rel="shortcut icon" type="image/png" href="{{url_for('static', filename='dfp_favico.png') }}"/>
+    <title>Data for Progress - Information Services</title>
+    {% endblock %}
+</head>
+
+
+<body>
+<div class="content">
+    <div class="center">
+        <img class="test" src="{{ url_for('static', filename='dfp_logo.png') }}" alt="Logo"/>
+        <div id="content" class="second">{% block content %}{% endblock %}</div>
+    </div>
+</div>
+
+</body>
+
+</html>
