@@ -2,6 +2,9 @@ data/
 figs/
 __pycache__/
 *.ttf
+*.service
+.Rproj.user/
+
 
 .idea/
 
@@ -109,3 +112,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+.Rproj.user

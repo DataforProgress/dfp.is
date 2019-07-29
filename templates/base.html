@@ -55,7 +55,7 @@
         display: inline-block;
     }
 
-    input {
+    .form-control {
         margin: 50px 0;
         background: none;
         border-bottom: 1px solid black;
@@ -86,6 +86,11 @@
         display: inline-block !important;
     }
 
+    table.center {
+    margin-left:auto;
+    margin-right:auto;
+  }
+
 </style>
 
 
@@ -100,7 +105,7 @@
 <body>
 <div class="content">
     <div class="center">
-        <img class="test" src="{{ url_for('static', filename='dfp_logo.png') }}" alt="Logo"/>
+        <a href="{{ url_for('home') }}"> <img class="test" src="{{ url_for('static', filename='dfp_logo.png') }}" alt="Logo"/> </a>
         <div id="content" class="second">{% block content %}{% endblock %}</div>
     </div>
 </div>

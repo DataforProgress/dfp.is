@@ -6,6 +6,8 @@
 
 <h1>Results: ({{ res['hits']['total'] }}) </h1>
 
+
+
 <table class="table">
     <thead>
     <tr>
@@ -21,7 +23,8 @@
         <th scope="row"><a href="{{ url_for('figure_request', _method='GET', index = hit['_id']) }}">{{
             hit['_source']['name'] }}</a></th>
         <td>{{ hit['_source']['description'] }}</td>
-        <td>{{ hit['_source']['survey_name'] }}</td>
+        <td><form id="form{{loop.index}}" action="/search/survey" method="post"><input type="hidden" name="survey" value="{{hit['_source']['survey']}}" /></form></td>
+        <td><input form="form{{loop.index}}" type="submit" value="{{hit['_source']['survey_name']}}" /></td>
     </tr>
     </tbody>
     {% endfor %}

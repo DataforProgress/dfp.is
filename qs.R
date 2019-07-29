@@ -16,21 +16,23 @@ save_question_csv <- function(ds){
         }
       }
     }
+    cats_str <- substring(cats_str, 2)
     return(cats_str)
   }
   
   qs$categories <- sapply(qs$alias, cats)
+  qs$survey <- stri_replace_all_fixed(name(ds), " ", "")
   qs$survey_name <- name(ds)
-  qs$survey_code <- stri_replace_all_fixed(name(ds), " ", "")
   return(qs)
 }
 
-urls <- list("https://app.crunch.io/dataset/2edf36e084ba4e088e5a3efdcf37714f/",
-             "https://app.crunch.io/dataset/ccf8ab5d1bf14c9ebd7946877e53cf5f/")
+urls <- list(
+             )
 
 qs <- data.frame()
 
 for (url in urls){
+  print(url)
   qs <- rbind(qs, save_question_csv(loadDataset(url)))
 }
 

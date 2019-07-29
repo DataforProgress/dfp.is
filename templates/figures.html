@@ -6,7 +6,28 @@
 
 <h1>{{question['name']}}</h1>
 
+<br>
+
 <p>{{question['description']}}</p>
+
+<br>
+
+<table class="table center">
+    <thead>
+    <tr>
+        <th>Responses</th>
+    </tr>
+    </thead>
+
+    {% set resps = question['categories'].split(';') %}
+    {% for hit in resps%}
+    <tbody>
+    <tr>
+        <td>{{ loop.index }} - {{ hit }}</td>
+    </tr>
+    </tbody>
+    {% endfor %}
+</table>
 
 {% if no_figs|length %}
 <br><br>

@@ -16,7 +16,7 @@ def search_request():
     search_term = request.form["input"]
     res = es.search(
         index="is",
-        size=20,
+        size=1000,
         body={
             "query": {
                 "multi_match": {
@@ -31,6 +31,28 @@ def search_request():
                     ]
                 }
             }
+        }
+    )
+    return render_template('results.html', res=res)
+
+@app.route('/search/survey', methods=['GET', 'POST'])
+def search_survey():
+    survey = request.form["survey"]
+    res = es.search(
+        index="is",
+        size=1000,
+        body={
+            "query": {
+                "bool": {
+                  "must": [
+                    {
+                      "match": {
+                        "survey": survey
+                      }
+                    }
+                  ]
+                }
+              }
         }
     )
     return render_template('results.html', res=res)
@@ -54,6 +76,5 @@ def figure_request():
 
 
 
-if __name__ == '__main__':
-    app.secret_key = ''
-    app.run(host='0.0.0.0', port=None)
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
