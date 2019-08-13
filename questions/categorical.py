@@ -84,7 +84,12 @@ def basic(df, qs, survey, question_alias, q_inc=None, path="figs", ylim=None, pa
     for p in ax.patches:
         height = p.get_height()
         ax.text(p.get_x() + p.get_width() / 2., height + 0.5, '{:1.2f}%'.format(height), ha="center")
-
+    
+    ################ Sagar Kumar 08/2019 ###################
+    df_path = 'data-infra-master/static/'
+    data.to_csv(df_path + '_' + q_info["survey_name"])
+    ########################################################
+    
     save_fig(survey, q_info["survey_name"], q_info["name"], path, question_alias, "base",
              ax, "Percent Respondents", ylim=ylim)
 
