@@ -9,13 +9,13 @@ dfCat = sns.color_palette(["#124073", "#A8BF14", "#B71D1A", "#BF7A00", "#b3b3b3"
 
 splits = [
     ("gender", None),
-    ("GENDER_4", None),
+    #("GENDER_4", None),
     ("race4", None),
     ("age5", None),
     ("educ4", None),
     ("pid3", 3),
-    ("ideo3", None),
-    ("urbancity", None)
+    ("ideo5", None),
+    ("urban", None)
 ]
 
 class FiveCatQuestion(BaseQuestion):
@@ -44,8 +44,6 @@ class CatQuestion(BaseQuestion):
     @staticmethod
     def valid_type(q_row):
         # inputregstate is too big
-        if q_row["alias"] == "inputregstate":
-            return False
         if q_row["type"] == "categorical" and not FiveCatQuestion.valid_type(q_row):
             return True
         return False
@@ -133,6 +131,8 @@ def full_split(df, qs, survey, question_alias, split_alias, q_inc=None, s_inc=No
         return
     except ValueError:
         return
+
+    print(q_info["survey_name"], q_info["name"])
 
     save_fig(survey, q_info["survey_name"], q_info["name"],
              path, question_alias, split_alias + "_fs", ax, "Percent Respondents",

@@ -58,11 +58,30 @@ def search_survey():
     return render_template('results.html', res=res)
 
 
+@app.route('/surveys')
+def surveys():
+    res = es.search(
+        index="is",
+        size=0,
+        body={
+            "aggs": {
+                "surveys": {
+                    "terms": {
+                        "field": "survey",
+                    }
+                }
+              }
+        }
+    )
+    surveys = [s["key"] for s in res["aggregations"]["surveys"]["buckets"]]
+    return render_template('surveys.html', res=surveys)
+
+
 @app.route('/figures/')
 def figure_request():
     # TODO: add more validation here
     index = int(request.args["index"])
-    res = es.get(index="is", doc_type='is', id=index)
+    res = es.get(index="is", doc_type='_doc', id=index)
     q = res["_source"]
     path = join("figs", q["survey"] + "_" + q["alias"])
     imgs = []

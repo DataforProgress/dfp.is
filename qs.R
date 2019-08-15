@@ -2,8 +2,8 @@ library(crunch)
 library(stringi)
 
 save_question_csv <- function(ds){
-  qs <- data.frame(variables(ds))
-  qs <- data.frame(alias=qs$alias, name=qs$name, type=qs$type,  description=descriptions(variables(ds)))
+  ts <- data.frame(variables(ds))
+  qs <- data.frame(alias=ts$alias, name=ts$name, type=ts$type,  description=descriptions(variables(ds)))
   
   cats <- function(id){
     id <- as.character(id)
@@ -20,20 +20,25 @@ save_question_csv <- function(ds){
     return(cats_str)
   }
   
+  print(cats)
+  
   qs$categories <- sapply(qs$alias, cats)
   qs$survey <- stri_replace_all_fixed(name(ds), " ", "")
   qs$survey_name <- name(ds)
+  #write.csv(ds, paste(qs$survey, ".csv"))
   return(qs)
 }
 
-urls <- list(
-             )
 
-qs <- data.frame()
+# use one of these to iterate over dataset names/urls that can be loaded from
 
-for (url in urls){
-  print(url)
-  qs <- rbind(qs, save_question_csv(loadDataset(url)))
+dss <- datasets()
+qs <- save_question_csv(loadDataset(dss[[1]]@entity_url))
+for (i in seq(2, length(dss))){
+  url <- dss[[i]]@entity_url
+  q <- save_question_csv(loadDataset(url))
+  print(colnames(q))
+  qs <- rbind(qs, q)
 }
 
 write.csv(qs, paste("qs_full", ".csv", sep=""))

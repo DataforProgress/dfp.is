@@ -1,0 +1,23 @@
+{% extends "search.html" %}
+
+{% block content %}
+
+{{ super() }}
+
+<h1>Surveys: </h1>
+
+<table class="table">
+    {% for hit in res %}
+    <tbody>
+    <tr>
+        <td><form id="form{{loop.index}}" action="/search/survey" method="post"><input type="hidden" name="survey" value="{{hit}}" /></form></td>
+        <td><input form="form{{loop.index}}" type="submit" value="{{hit}}" /></td>
+    </tr>
+    </tbody>
+    {% endfor %}
+</table>
+
+
+</div>
+
+{% endblock %}
