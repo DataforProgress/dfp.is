@@ -55,6 +55,7 @@ def get_q(qs, survey, alias, inc=None, wrap_len=None, ex_other=True):
     """
     #TODO: add ability to order responses with inc or some such
     #TODO: can use index instead of alias to grab row and then use .to_dict, much cleaner
+    # print(qs["alias"], qs["survey"], alias, survey)
     df = qs.loc[(qs["alias"] == alias) & (qs["survey"] == survey)]
     info = {k: v for k, v in zip(df.keys(), df.values[0])}
     if wrap_len is not None:

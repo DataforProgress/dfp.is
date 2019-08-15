@@ -17,4 +17,4 @@ for _, q in qs.iterrows():
     for k in tmp.keys():
         if not isinstance(tmp[k], str):
             tmp[k] = ""
-    es.index(index='is', doc_type='is', id=q["Unnamed: 0"], body=tmp)
+    es.index(index='is', doc_type='_doc', id=q["Unnamed: 0"], body=tmp)
