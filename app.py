@@ -74,6 +74,15 @@ def figure_request():
     imgs = reversed(imgs)
     return render_template('figures.html', question=q, imgs=imgs, no_figs=no_figs)
 
+######## Sagar Kumar 08/19 ##############
+@app.route('/return_data/')
+def data_request(return_data):
+    index = int(request.args["index"])
+    res = es.get(index="is", doc_type='is', id=index)
+    q = res["_source"]
+    path = join(q["survey"])
+    return send_static_file('static/' + path)
+#########################################
 
 
 if __name__ == "__main__":
