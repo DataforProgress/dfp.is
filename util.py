@@ -57,6 +57,8 @@ def get_q(qs, survey, alias, inc=None, wrap_len=None, ex_other=True):
     #TODO: can use index instead of alias to grab row and then use .to_dict, much cleaner
     # print(qs["alias"], qs["survey"], alias, survey)
     df = qs.loc[(qs["alias"] == alias) & (qs["survey"] == survey)]
+    if len(df) == 0:
+        return None, None
     info = {k: v for k, v in zip(df.keys(), df.values[0])}
     if wrap_len is not None:
         wrapper = textwrap.TextWrapper(width=wrap_len)
@@ -68,7 +70,7 @@ def get_q(qs, survey, alias, inc=None, wrap_len=None, ex_other=True):
     return info, responses
 
 
-def save_fig(survey, survey_name, title, path, alias, suffix, ax, ylabel, ylim=None, legend_kw=None):
+def save_fig(survey, survey_name, title, path, alias, suffix, ax, ylabel, data, ylim=None, legend_kw=None):
     """
     Saves a figure in appropriate dir with passed settings
     :param survey: string survey code
@@ -89,6 +91,8 @@ def save_fig(survey, survey_name, title, path, alias, suffix, ax, ylabel, ylim=N
     if legend_kw is not None:
         ax.legend(**legend_kw)
     fname = os.path.join(path, survey + "_" + alias, alias + "_" + suffix + ".png")
+    fdata = os.path.join(path, survey + "_" + alias, alias + "_" + suffix + ".csv")
+    data.to_csv(fdata)
     dfpSave(fname, [ax], despineX=True)
     img = Image.open(fname)
     width, height = img.size

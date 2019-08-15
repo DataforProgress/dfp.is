@@ -9,13 +9,19 @@ dfCat = sns.color_palette(["#124073", "#A8BF14", "#B71D1A", "#BF7A00", "#b3b3b3"
 
 splits = [
     ("gender", None),
-    #("GENDER_4", None),
+    ("GENDER_4", None),
     ("race4", None),
     ("age5", None),
     ("educ4", None),
     ("pid3", 3),
+    ("ideo3", None),
+    ("urbancity", None),
     ("ideo5", None),
-    ("urban", None)
+    ("ideo3", None),
+    ("ideo7", None),
+    ("urban", None),
+    ("HOME_OWN", None),
+    ("OPIOID", None)
 ]
 
 class FiveCatQuestion(BaseQuestion):
@@ -83,13 +89,8 @@ def basic(df, qs, survey, question_alias, q_inc=None, path="figs", ylim=None, pa
         height = p.get_height()
         ax.text(p.get_x() + p.get_width() / 2., height + 0.5, '{:1.2f}%'.format(height), ha="center")
     
-    ################ Sagar Kumar 08/2019 ###################
-    df_path = 'data-infra-master/static/'
-    data.to_csv(df_path + '_' + q_info["survey_name"])
-    ########################################################
-    
     save_fig(survey, q_info["survey_name"], q_info["name"], path, question_alias, "base",
-             ax, "Percent Respondents", ylim=ylim)
+             ax, "Percent Respondents", data, ylim=ylim)
 
 
 def full_split(df, qs, survey, question_alias, split_alias, q_inc=None, s_inc=None,
@@ -116,6 +117,8 @@ def full_split(df, qs, survey, question_alias, split_alias, q_inc=None, s_inc=No
 
     q_info, q_responses = get_q(qs, survey, question_alias, inc=q_inc, wrap_len=14, ex_other=False)
     s_info, s_responses = get_q(qs, survey, split_alias, inc=s_inc, wrap_len=30, ex_other=ex_other)
+    if s_info is None:
+        return
 
     data = []
     for i, s in enumerate(s_responses):
@@ -140,7 +143,7 @@ def full_split(df, qs, survey, question_alias, split_alias, q_inc=None, s_inc=No
     print(q_info["survey_name"], q_info["name"])
 
     save_fig(survey, q_info["survey_name"], q_info["name"],
-             path, question_alias, split_alias + "_fs", ax, "Percent Respondents",
+             path, question_alias, split_alias + "_fs", ax, "Percent Respondents", data,
              legend_kw={"loc": "center", "bbox_to_anchor": (0.5, -0.15), "ncol": len(q_responses)}, ylim=ylim)
 
 
@@ -174,6 +177,9 @@ def net_split(df, qs, survey, question_alias, split_alias, q_inc=None, s_inc=Non
     q_info, q_responses = get_q(qs, survey, question_alias, inc=q_inc, wrap_len=14, ex_other=True)
     s_info, s_responses = get_q(qs, survey, split_alias, inc=s_inc, wrap_len=30, ex_other=ex_other)
 
+    if s_info is None:
+        return
+
     data = []
     for i, s in enumerate(s_responses):
         s_df = df[(df[split_alias] == i + 1)]
@@ -188,4 +194,4 @@ def net_split(df, qs, survey, question_alias, split_alias, q_inc=None, s_inc=Non
     ax = sns.barplot(x=s_info["name"], y="Net Support", data=data, ax=ax, palette=palette)
 
     save_fig(survey, q_info["survey_name"], q_info["name"], path, question_alias, split_alias + "_ns",
-             ax, "Net Support", ylim=ylim)
+             ax, "Net Support", data, ylim=ylim)

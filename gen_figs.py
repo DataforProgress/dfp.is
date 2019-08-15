@@ -10,8 +10,8 @@ fig_path = "figs"
 qs = pd.read_csv("data/qs_full.csv")
 
 # Currently only have one survey I can use here
-surveys = [#("DataforProgressNationalIssuesSurveyWave4", "dfp_april2019_return.csv"),
-           #("DfP:DemocraticPrimaryFirstDebateSurvey--FullDataset", "FIRSTDEBATE_DATA.csv"),
+surveys = [("DataforProgressNationalIssuesSurveyWave4", "dfp_april2019_return.csv"),
+           ("DfP:DemocraticPrimaryFirstDebateSurvey--FullDataset", "FIRSTDEBATE_DATA.csv"),
            ("DataforProgressYouGovBlue,Jan2019IssuesSurvey", "dfp_wave3_201901_final.csv")]
 
 
