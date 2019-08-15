@@ -86,10 +86,10 @@ def figure_request():
     path = join("figs", q["survey"] + "_" + q["alias"])
     imgs = []
     no_figs = ""
-    if isdir(path):
-        imgs = [[join(path, f), join(path, f.split(".")[0] + ".csv")] for f in listdir(path) if isfile(join(path, f)) and ".png" in f]
+    if isdir(join("static", path)):
+        imgs = [[join(path, f), join(path, f.split(".")[0] + ".csv")] for f in listdir(join("static", path)) if isfile(join("static", path, f)) and ".png" in f]
     else:
-        no_figs = "No figures have been generated for this question."
+        no_figs = "No figures have been generated for this question. " + join("static", path)
     imgs = sorted(imgs)
     search_term = q["description"]
     res = es.search(
