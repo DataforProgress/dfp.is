@@ -20,10 +20,10 @@
     </thead>
 
     {% set resps = question['categories'].split(';') %}
-    {% for hit in resps%}
+    {% for resp in resps%}
     <tbody>
     <tr>
-        <td>{{ loop.index }} - {{ hit }}</td>
+        <td>{{ loop.index }} - {{ resp }}</td>
     </tr>
     </tbody>
     {% endfor %}
@@ -37,11 +37,39 @@
 
     {% for img in imgs %}
     <div class="row">
-        <div class="col-md-3"><img class="center" src="{{ url_for('static', filename=img) }}" style="width: 60%"></div>
+        <div class="col-md-3"><img class="center" src="{{ url_for('static', filename=img[0]) }}" style="width: 60%"></div>
+        <div class="col-md-3"><a href="{{ url_for('static', filename=img[1]) }}">Export Data</a></div>
     </div>
     {% endfor %}
 
 </div>
 {% endif %}
+
+<br>
+
+<h1>Related questions: </h1>
+
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Wording</th>
+        <th>Survey</th>
+    </tr>
+    </thead>
+
+    {% for hit in related['hits']['hits'] %}
+    <tbody>
+    <tr>
+        <th scope="row"><a href="{{ url_for('figure_request', _method='GET', index = hit['_id']) }}">{{
+            hit['_source']['name'] }}</a></th>
+        <td>{{ hit['_source']['description'] }}</td>
+        <td><form id="form{{loop.index}}" action="/search/survey" method="post"><input type="hidden" name="survey" value="{{hit['_source']['survey']}}" /></form></td>
+        <td><input form="form{{loop.index}}" type="submit" value="{{hit['_source']['survey_name']}}" /></td>
+    </tr>
+    </tbody>
+    {% endfor %}
+</table>
 
 {% endblock %}

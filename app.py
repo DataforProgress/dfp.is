@@ -87,21 +87,31 @@ def figure_request():
     imgs = []
     no_figs = ""
     if isdir(path):
-        imgs = [join(path, f) for f in listdir(path) if isfile(join(path, f)) and ".png" in f]
+        imgs = [[join(path, f), join(path, f.split(".")[0] + ".csv")] for f in listdir(path) if isfile(join(path, f)) and ".png" in f]
     else:
         no_figs = "No figures have been generated for this question."
-    imgs = reversed(imgs)
-    return render_template('figures.html', question=q, imgs=imgs, no_figs=no_figs)
-
-######## Sagar Kumar 08/19 ##############
-@app.route('/return_data/')
-def data_request(return_data):
-    index = int(request.args["index"])
-    res = es.get(index="is", doc_type='is', id=index)
-    q = res["_source"]
-    path = join(q["survey"])
-    return send_static_file('static/' + path)
-#########################################
+    imgs = sorted(imgs)
+    search_term = q["description"]
+    res = es.search(
+        index="is",
+        size=5,
+        body={
+            "query": {
+                "multi_match": {
+                    "query": search_term,
+                    "fields": [
+                        "name",
+                        "description",
+                        "alias",
+                        "categories",
+                        "type",
+                        "survey_name",
+                    ]
+                }
+            }
+        }
+    )
+    return render_template('figures.html', question=q, imgs=imgs, no_figs=no_figs, related=res)
 
 
 if __name__ == "__main__":
