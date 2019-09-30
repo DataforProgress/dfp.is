@@ -42,7 +42,7 @@ def getMSE(df, qCol, valuesS, weightCol, valuesO=None):
     return pd.Series({"Mean": Mean, "Std": surveyStdvs})
 
 
-def get_q(qs, survey, alias, inc=None, wrap_len=None, ex_other=True):
+def get_q(qs, alias, inc=None, wrap_len=None, ex_other=True):
     """
     Get a dict of representation of a question and a filtered list of the question responses
     :param qs: questions data frame
@@ -53,21 +53,15 @@ def get_q(qs, survey, alias, inc=None, wrap_len=None, ex_other=True):
     :param ex_other: exclude "Other" from returned responses
     :return: a dict of representation of a question and a filtered list of the question responses
     """
-    #TODO: add ability to order responses with inc or some such
-    #TODO: can use index instead of alias to grab row and then use .to_dict, much cleaner
-    # print(qs["alias"], qs["survey"], alias, survey)
-    df = qs.loc[(qs["alias"] == alias) & (qs["survey"] == survey)]
-    if len(df) == 0:
-        return None, None
-    info = {k: v for k, v in zip(df.keys(), df.values[0])}
+    q = qs[qs["Variable"] == alias]
     if wrap_len is not None:
         wrapper = textwrap.TextWrapper(width=wrap_len)
-        responses = ["\n".join(wrapper.wrap(cat)) for i, cat in enumerate(info["categories"].split(";"))
-                     if ((ex_other is False) or cat != "Other") and ((inc is None) or (i in inc))]
-    else:
-        responses = [cat for i, cat in enumerate(info["categories"].split(";"))
-                     if ((ex_other is False) or cat != "Other") and ((inc is None) or (i in inc))]
-    return info, responses
+        q.loc[:, "Response"] = q["Response"].apply(lambda x: "\n".join(wrapper.wrap(x)))
+    if ex_other:
+        q = q[q["Response"] != "Other"]
+    if inc is not None:
+        q = q.iloc[inc]
+    return q
 
 
 def save_fig(survey, survey_name, title, path, alias, suffix, ax, ylabel, data, ylim=None, legend_kw=None):
@@ -90,8 +84,10 @@ def save_fig(survey, survey_name, title, path, alias, suffix, ax, ylabel, data, 
         ax.set_ylim(ylim)
     if legend_kw is not None:
         ax.legend(**legend_kw)
-    fname = os.path.join(path, survey + "_" + alias, alias + "_" + suffix + ".png")
-    fdata = os.path.join(path, survey + "_" + alias, alias + "_" + suffix + ".csv")
+    fname = os.path.join(path, survey, alias, "png", survey + "_" + alias + "_" + suffix + ".png")
+    fdata = os.path.join(path, survey, alias, "csv", survey + "_" + alias + "_" + suffix + ".csv")
+    print(data)
+    # data["Response"] = data["Response"].astype(int) breaks on NaN
     data.to_csv(fdata)
     dfpSave(fname, [ax], despineX=True)
     img = Image.open(fname)

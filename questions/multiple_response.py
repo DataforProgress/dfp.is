@@ -1,11 +1,6 @@
-from util import *
-
-from dfpvizpy.dfpvizpy import dfpPartisan
 from questions.base_question import BaseQuestion
 
-dfCat = sns.color_palette(["#124073", "#A8BF14", "#B71D1A", "#BF7A00", "#b3b3b3", "#000000", "#BC4A11"])
-
-# TODO: figure out how to grab these demos across surveys easily
+from viz import *
 
 splits = [
     ("gender", None),
@@ -24,33 +19,14 @@ splits = [
     ("OPIOID", None)
 ]
 
-class FiveCatQuestion(BaseQuestion):
-    """
-    A question with a five category scale in the order "Strongly", "Somewhat", "Neither", "Somewhat", "Strongly"
-    """
-    @staticmethod
-    def valid_type(q):
-        res_pattern = ["Strongly", "Somewhat", "Neither", "Somewhat", "Strongly"]
-        if q["Type"].iloc[0] == "categorical" and all(pat in res for res, pat in zip(q["Response"], res_pattern)):
-            return True
-        return False
-
-    def gen_figs(self):
-        basic(self.df, self.qs, self.survey, self.alias,  q_inc=5, palette=dfpPartisan)
-        for split_alias, s_inc in splits:
-            full_split(self.df, self.qs, self.survey, self.alias, split_alias, q_inc=5, s_inc=s_inc,
-                       palette=dfpPartisan)
-            net_split(self.df, self.qs, self.survey, self.alias, split_alias, q_inc=5, s_inc=s_inc)
-
-
-class CatQuestion(BaseQuestion):
+class MultiRespQuestion(BaseQuestion):
     """
     Any non-FiveCat categorical question
     """
     @staticmethod
     def valid_type(q):
         # inputregstate is too big
-        if q["Type"].iloc[0] == "categorical" and not FiveCatQuestion.valid_type(q):
+        if q["Type"].iloc[0] == "multiple_response":
             return True
         return False
 
@@ -77,15 +53,9 @@ def basic(df, qs, survey, question_alias, q_inc=None, path="figs", ylim=None, pa
 
     q = get_q(qs, question_alias, inc=q_inc, wrap_len=14, ex_other=False)
 
-    if len(q) == 0:
-        return
-
     data = []
     for j, part in enumerate(q["Response"]):
-        try:
-            mean, std = getMSE(df, question_alias, [j + 1], "weight")
-        except KeyError:
-            return
+        mean, std = getMSE(df, question_alias, [j + 1], "weight")
         data.append([part, mean * 100.])
 
     data = pd.DataFrame.from_records(data, columns=[q["Name"].iloc[0], "Response"])
@@ -125,8 +95,6 @@ def full_split(df, qs, survey, question_alias, split_alias, q_inc=None, s_inc=No
     q = get_q(qs, question_alias, inc=q_inc, wrap_len=14, ex_other=False)
     s = get_q(qs, split_alias, inc=s_inc, wrap_len=30, ex_other=ex_other)
 
-    if len(q) == 0:
-        return
     if len(s) == 0:
         return
 
@@ -134,10 +102,7 @@ def full_split(df, qs, survey, question_alias, split_alias, q_inc=None, s_inc=No
     for i, sr in enumerate(s["Response"]):
         for j, qr in enumerate(q["Response"]):
             s_df = df[(df[split_alias] == i + 1)]
-            try:
-                mean, std = getMSE(s_df, question_alias, [j + 1], "weight")
-            except KeyError:
-                return
+            mean, std = getMSE(s_df, question_alias, [j + 1], "weight")
             data.append([sr + "\n(n=%d)" % len(s_df.index) if legend_n else sr, qr, mean * 100.])
 
     data = pd.DataFrame.from_records(data, columns=[s["Name"].iloc[0], q["Name"].iloc[0], "Response"])
@@ -189,18 +154,13 @@ def net_split(df, qs, survey, question_alias, split_alias, q_inc=None, s_inc=Non
     q = get_q(qs, question_alias, inc=q_inc, wrap_len=14, ex_other=True)
     s = get_q(qs, split_alias, inc=s_inc, wrap_len=30, ex_other=ex_other)
 
-    if len(q) == 0:
-        return
     if len(s) == 0:
         return
 
     data = []
     for i, sr in enumerate(s["Response"]):
         s_df = df[(df[split_alias] == i + 1)]
-        try:
-            mean, std = getMSE(s_df, question_alias, cols[0], "weight", valuesO=cols[1])
-        except KeyError:
-            return
+        mean, std = getMSE(s_df, question_alias, cols[0], "weight", valuesO=cols[1])
         data.append([sr + "\n(n=%d)" % len(s_df.index) if legend_n else s, mean * 100.])
 
     data = pd.DataFrame.from_records(data, columns=[s["Name"].iloc[0], "Response"])

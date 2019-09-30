@@ -19,11 +19,12 @@
     </tr>
     </thead>
 
-    {% set resps = question['categories'].split(';') %}
-    {% for resp in resps%}
+    {% set resps = question['categories'] %}
+    {% set vals = question['values'] %}
+    {% for resp, val in zip(resps, vals)%}
     <tbody>
     <tr>
-        <td>{{ loop.index }} - {{ resp }}</td>
+        <td>{{ val }} - {{ resp }}</td>
     </tr>
     </tbody>
     {% endfor %}

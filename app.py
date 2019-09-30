@@ -7,9 +7,9 @@ from os.path import isfile, join, isdir
 app = Flask(__name__)
 es = Elasticsearch('localhost', port=9200)
 
-@app.route('/')
-def home():
-    return render_template('search.html')
+#@app.route('/')
+#def home():
+#    return render_template('search.html')
 
 @app.route('/search/results', methods=['GET', 'POST'])
 def search_request():
@@ -58,8 +58,8 @@ def search_survey():
     return render_template('results.html', res=res)
 
 
-@app.route('/surveys')
-def surveys():
+@app.route('/')
+def home():
     res = es.search(
         index="is",
         size=0,
@@ -68,12 +68,13 @@ def surveys():
                 "surveys": {
                     "terms": {
                         "field": "survey",
+                        "size": 10000
                     }
                 }
               }
         }
     )
-    surveys = [s["key"] for s in res["aggregations"]["surveys"]["buckets"]]
+    surveys = sorted([s["key"] for s in res["aggregations"]["surveys"]["buckets"]])
     return render_template('surveys.html', res=surveys)
 
 
@@ -83,14 +84,18 @@ def figure_request():
     index = int(request.args["index"])
     res = es.get(index="is", doc_type='_doc', id=index)
     q = res["_source"]
-    path = join("figs", q["survey"] + "_" + q["alias"])
+    path = join("figs", q["survey"], q["alias"])
     imgs = []
     no_figs = ""
+    print(path)
     if isdir(join("static", path)):
-        imgs = [[join(path, f), join(path, f.split(".")[0] + ".csv")] for f in listdir(join("static", path)) if isfile(join("static", path, f)) and ".png" in f]
+        imgs = [[join(path, "png", f), join(path, "csv", f.split(".")[0] + ".csv")]
+                for f in listdir(join("static", path, "png"))
+                if isfile(join("static", path, "png", f)) and ".png" in f]
+        print(join("static", path, "png"), listdir(join("static", path, "png")))
+        imgs = sorted(imgs)
     else:
         no_figs = "No figures have been generated for this question. " + join("static", path)
-    imgs = sorted(imgs)
     search_term = q["description"]
     res = es.search(
         index="is",
@@ -111,8 +116,9 @@ def figure_request():
             }
         }
     )
-    return render_template('figures.html', question=q, imgs=imgs, no_figs=no_figs, related=res)
+    print(imgs)
+    return render_template('figures.html', question=q, imgs=imgs, no_figs=no_figs, related=res, zip=zip)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)

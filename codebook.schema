@@ -1,0 +1,18 @@
+CREATE TABLE questions (
+    survey TEXT,
+    variable TEXT,
+    wording TEXT,
+    name TEXT,
+    type TEXT,
+    PRIMARY KEY (survey, variable)
+);
+
+CREATE TABLE responses (
+    survey TEXT,
+    variable TEXT,
+    response TEXT,
+    value INTEGER,
+    aliases TEXT,
+    rows TEXT,
+    PRIMARY KEY (survey, variable)
+);

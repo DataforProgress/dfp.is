@@ -1,0 +1,21 @@
+curl -X DELETE "localhost:9200/is?pretty"
+
+curl -X PUT "localhost:9200/is?pretty" -H 'Content-Type: application/json' -d'
+{
+  "mappings": {
+    "properties": {
+      "alias": { "type": "keyword" },
+      "name": { "type": "text" },
+      "type": { "type": "keyword" },
+      "description": { "type": "text" },
+      "categories": { "type": "text" },
+      "values": { "type": "float" },
+      "rows": { "type": "text" },
+      "aliases": { "type": "text" },
+      "survey": { "type": "keyword" },
+      "survey_name": { "type": "text" }
+      }
+    }
+  }
+}
+'

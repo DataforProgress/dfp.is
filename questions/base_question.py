@@ -6,7 +6,7 @@ class BaseQuestion(abc.ABC):
     This is the base question interface, all questions should inherit it.
     A question that inherits it will be automatically checked with the valid_type question in the gen_figs routine.
     """
-    def __init__(self, df, qs, survey, alias):
+    def __init__(self, df, qs, survey, survey_name, alias):
         """
 
         :param df: survey data frame
@@ -17,6 +17,7 @@ class BaseQuestion(abc.ABC):
         self.df = df
         self.qs = qs
         self.survey = survey
+        self.survey_name = survey_name
         self.alias = alias
 
     @staticmethod
