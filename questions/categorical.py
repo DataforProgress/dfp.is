@@ -21,7 +21,11 @@ splits = [
     ("ideo7", None),
     ("urban", None),
     ("HOME_OWN", None),
-    ("OPIOID", None)
+    ("OPIOID", None),
+    ("gender_web_twoway", None),
+    ("partisanship_web2", None),
+    ("race_civis2_web", None),
+    ("education_2", None)
 ]
 
 class FiveCatQuestion(BaseQuestion):
@@ -92,7 +96,8 @@ def basic(df, qs, survey, question_alias, q_inc=None, path="figs", ylim=None, pa
     fig, ax = plt.subplots(1, 1, figsize=(8, 6))
     ax = sns.barplot(x=q["Name"].iloc[0], y="Response", data=data, ax=ax, palette=palette)
     for p in ax.patches:
-        height = p.get_height()
+        height = np.nan_to_num(p.get_height(), 0)
+        print(p.get_x(), p.get_height())
         ax.text(p.get_x() + p.get_width() / 2., height + 0.5, '{:1.2f}%'.format(height), ha="center")
 
     save_fig(survey, survey_name, q["Name"].iloc[0], path, question_alias, "base",
@@ -141,6 +146,7 @@ def full_split(df, qs, survey, question_alias, split_alias, q_inc=None, s_inc=No
             data.append([sr + "\n(n=%d)" % len(s_df.index) if legend_n else sr, qr, mean * 100.])
 
     data = pd.DataFrame.from_records(data, columns=[s["Name"].iloc[0], q["Name"].iloc[0], "Response"])
+    print(q,s,data,"------------")
     if data.empty:
         return
 

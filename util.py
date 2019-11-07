@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
-
+import re
 import matplotlib.pyplot as plt
 from dfpvizpy.dfpvizpy import dfpSave
 import matplotlib.font_manager as fm
@@ -56,10 +56,10 @@ def get_q(qs, alias, inc=None, wrap_len=None, ex_other=True):
     q = qs[qs["Variable"] == alias]
     if wrap_len is not None:
         wrapper = textwrap.TextWrapper(width=wrap_len)
-        q.loc[:, "Response"] = q["Response"].apply(lambda x: "\n".join(wrapper.wrap(x)))
+        q.loc[:, "Response"] = q["Response"].apply(lambda x: "\n".join(wrapper.wrap(re.sub(r" ?\<[^>]+\>", "", x))))
     if ex_other:
         q = q[q["Response"] != "Other"]
-    if inc is not None:
+    if inc is not None and len(q) > 0:
         q = q.iloc[inc]
     return q
 
@@ -88,7 +88,7 @@ def save_fig(survey, survey_name, title, path, alias, suffix, ax, ylabel, data, 
     fdata = os.path.join(path, survey, alias, "csv", survey + "_" + alias + "_" + suffix + ".csv")
     print(data)
     # data["Response"] = data["Response"].astype(int) breaks on NaN
-    data.to_csv(fdata)
+    data.to_csv(fdata, index=False)
     dfpSave(fname, [ax], despineX=True)
     img = Image.open(fname)
     width, height = img.size

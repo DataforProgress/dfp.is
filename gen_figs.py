@@ -7,7 +7,7 @@ import questions.categorical
 # import questions.multiple_response
 
 fig_path = "figs"
-data_dir = "data"
+data_dir = "sg"
 
 
 def gen_figs(survey_path, survey_name=""):
@@ -37,7 +37,8 @@ def gen_figs(survey_path, survey_name=""):
             # this is like a basic plugin framework, get everything that subclasses the Base, and check against
             # the valid_type method; if valid_type returns true, call gen_figs
             for c in BaseQuestion.__subclasses__():
-                if not c.valid_type(get_q(cb, alias, ex_other=False)):
+                q = get_q(cb, alias, ex_other=False)
+                if not c.valid_type(q):
                     # TODO: fix question filtering; perhaps just by a simple mapping
                     continue
                 if not os.path.isdir(os.path.join(fig_path, survey, alias, "csv")):
@@ -51,6 +52,7 @@ def gen_figs(survey_path, survey_name=""):
                 # TODO: maybe clean up usage of rows/get_q util... should ideally be consistent
                 # TODO: check that all aliases are in data file
                 c(df, cb, survey, survey_name, alias).gen_figs()
+
 
 
 gen_figs(data_dir, survey_name="")
